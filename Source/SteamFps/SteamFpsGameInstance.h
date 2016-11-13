@@ -13,7 +13,17 @@ enum class eGameState : uint8
     Playing,
     ErrorDialog,
     ServerList,
-    Unknown
+    Unknown,
+    LoadingScreen,
+    kCount
+};
+
+USTRUCT()
+struct FGameStateStruct
+{
+    GENERATED_BODY()
+
+    class UWidget* Widget;
 };
 
 UCLASS()
@@ -22,45 +32,39 @@ class STEAMFPS_API USteamFpsGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-    UFUNCTION()
-    bool IsCurrentState(eGameState gs)
-    {
-        return gs == m_currentState;
-    }
+    USteamFpsGameInstance();
 
     UFUNCTION()
-    void StateTransition(eGameState gs)
-    {
-        if (IsCurrentState(gs))
-        {
-            // PrintToScreen("Error, trying to leaving curState.", Red, 5.0s);
-            return;
-        }
+    bool IsInState(eGameState gs) const { return gs == m_currentState; }
 
-        // Handle exiting existing states
-        //switch(m_currentState)
-        //{
-        //}
+    UFUNCTION()
+    void StateTransition(eGameState gs);
 
-        // PrintToScreen("Setting new state {gs}", White, 5.0f);
-        m_currentState = gs;
-    }
+    UFUNCTION(BlueprintCallable, Category="Menus")
+    void ShowMainMenu();
+
+protected:
+    void ShowLoadScreen();
+    void HostGameEvent();
+    void CreateSession();
+    void DestroySession(APlayerController* playerController);
+    bool ServerTravel(const FString& url, bool absolute, bool shouldSkipGameNotify);
+    void ErrorHandler();
+
+    void CreateWidgets();
+
+protected:
+    void ShowWidget(eGameState gs, bool showOrHide);
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool m_isLanEnabled;
+    bool m_enableLan;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     eGameState m_currentState;
 
-    //UPROPERTY()
-    //    class UWidget* m_widgetMainMenu;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    TArray<FGameStateStruct> m_stateData;
 
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    //    class UWidget* m_widgetServerList;
-
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    //    class UWidget* m_widgetLoading;
-
-    //UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    //    class UWidget* m_widetErrorDialog;
+    // Need array of available sessions
+    // TArray<BlueprintSessionResult> m_findServerResults;
 };

@@ -1,9 +1,13 @@
 // Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
 
-#ifndef __STEAMFPS_H__
-#define __STEAMFPS_H__
+#pragma once
 
-#include "EngineMinimal.h"
+#include <Engine.h>
+#include <Net/UnrealNetwork.h>
 
+#include "Common/Macros.h"
+#include "Common/Logging.h"
+#include "Common/Assert.h"
 
-#endif
+#define SESSION_NAME "SteamFps"
+#define M_MAX_PLAYER_COUNT 4

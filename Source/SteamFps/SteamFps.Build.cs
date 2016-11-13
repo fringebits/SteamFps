@@ -12,8 +12,11 @@ public class SteamFps : ModuleRules
                 "CoreUObject",
                 "Engine",
                 "InputCore",
+                "OnlineSubsystem",
+                "OnlineSubsystemUtils",
                 "Slate",
                 "SlateCore",
+                "UMG",
                 "HeadMountedDisplay"
             }
         );
