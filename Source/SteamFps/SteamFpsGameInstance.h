@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2016 V1 Interactive Inc - All Rights Reserved.
 
 #pragma once
 
@@ -33,6 +33,11 @@ class STEAMFPS_API USteamFpsGameInstance : public UGameInstance
 
 public:
     USteamFpsGameInstance();
+    ~USteamFpsGameInstance();
+
+    static USteamFpsGameInstance* GetInstance();
+
+    void OpenLevel(FName levelName, bool absolute = true, FString options = FString(TEXT("")));
 
     UFUNCTION()
     bool IsInState(eGameState gs) const { return gs == m_currentState; }
@@ -46,12 +51,16 @@ public:
 protected:
     void ShowLoadScreen();
     void HostGameEvent();
-    void CreateSession();
     void DestroySession(APlayerController* playerController);
     bool ServerTravel(const FString& url, bool absolute, bool shouldSkipGameNotify);
     void ErrorHandler();
 
     void CreateWidgets();
+
+    void OnEnterGameState(const eGameState gs);
+    void OnExitGameState(const eGameState gs);
+
+    void RefreshServerList();
 
 protected:
     void ShowWidget(eGameState gs, bool showOrHide);

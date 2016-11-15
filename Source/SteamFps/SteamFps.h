@@ -1,13 +1,16 @@
-// Copyright 1998-2016 Epic Games, Inc. All Rights Reserved.
+// Copyright (c) 2016 V1 Interactive Inc - All Rights Reserved.
 
 #pragma once
 
 #include <Engine.h>
 #include <Net/UnrealNetwork.h>
 
+#include <memory>
+#include <list>
+
 #include "Common/Macros.h"
 #include "Common/Logging.h"
 #include "Common/Assert.h"
 
-#define SESSION_NAME "SteamFps"
-#define M_MAX_PLAYER_COUNT 4
+#define V_SESSION_NAME      "SteamFpsSession"
+#define V_MAX_PLAYER_COUNT  4

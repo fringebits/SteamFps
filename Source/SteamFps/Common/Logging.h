@@ -1,26 +1,21 @@
 // Copyright (c) 2016 V1 Interactive Inc - All Rights Reserved.
 #pragma once
 
-#include "Runtime/Core/Public/Misc/Paths.h"
+#include <Runtime/Core/Public/Misc/Paths.h>
 #include <chrono>
 
-DECLARE_LOG_CATEGORY_EXTERN(General, Log, All)
+DECLARE_LOG_CATEGORY_EXTERN(GeneralLog, Log, All)
 DECLARE_LOG_CATEGORY_EXTERN(AssertLog, Log, All)
-DECLARE_LOG_CATEGORY_EXTERN(LogTrace, Log, All)
-DECLARE_LOG_CATEGORY_EXTERN(LogTest, Log, All)
-DECLARE_LOG_CATEGORY_EXTERN(GameSessionLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(GameModeLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(GameStateLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(WeaponLog, Log, All);
-DECLARE_LOG_CATEGORY_EXTERN(AbilityLog, Log, All);
+DECLARE_LOG_CATEGORY_EXTERN(TraceLog, Log, All)
+DECLARE_LOG_CATEGORY_EXTERN(TestLog, Log, All)
 
 #define V_FORMAT_NETMODE(world) \
-!(IsValid(GEngine) && IsValid(world)) ? TEXT("World or GEngine not valid") : \
-GEngine->GetNetMode(world) == NM_Client ? TEXT("Client") : \
-GEngine->GetNetMode(world) == NM_ListenServer ? TEXT("ListenServer") : \
-GEngine->GetNetMode(world) == NM_DedicatedServer ? TEXT("DedicatedServer") : \
-GEngine->GetNetMode(world) == NM_Standalone ? TEXT("Standalone") : \
-TEXT("InvalidNetMode")
+    !(IsValid(GEngine) && IsValid(world)) ? TEXT("World or GEngine not valid") : \
+    GEngine->GetNetMode(world) == NM_Client ? TEXT("Client") : \
+    GEngine->GetNetMode(world) == NM_ListenServer ? TEXT("ListenServer") : \
+    GEngine->GetNetMode(world) == NM_DedicatedServer ? TEXT("DedicatedServer") : \
+    GEngine->GetNetMode(world) == NM_Standalone ? TEXT("Standalone") : \
+    TEXT("InvalidNetMode")
 
 // COLOR_BLACK = TEXT("0000");
 // COLOR_DARK_RED = TEXT("1000");
@@ -166,8 +161,8 @@ namespace LoggingHelpers
 // simple trace utilities for logging scope in/out (optionally with timer)
 #define V_TRACE()           LoggingHelpers::Trace _trace ## __LINE__(X_FORMAT_LOG_LOCATION, true, X_FORMAT_LOG_SCOPE)
 #define V_TRACE_MARKER()    LoggingHelpers::Trace _trace ## __LINE__(X_FORMAT_LOG_LOCATION, false, X_FORMAT_LOG_SCOPE)
-#define V_DEPRECATED()      V_WARNING_S(General, "This funcion is deprecated.")
-#define V_NOT_IMPLEMENTED() V_ERROR_S(General, "This funcion has not been implemented.")
+#define V_DEPRECATED()      V_WARNING_S(GeneralLog, "This funcion is deprecated.")
+#define V_NOT_IMPLEMENTED() V_ERROR_S(GeneralLog, "This funcion has not been implemented.")
 
 #else
 #define V_BRIEF(category, color, format, ...) do{}while(false);
@@ -195,14 +190,14 @@ namespace LoggingHelpers
 // Macros for checking / requiring conditions
 #define V_CHECK(condition) \
     do { if (!(condition)) { \
-        V_ERROR_IF_S(!(condition), General, "V_CHECK failed!"); \
+        V_ERROR_IF_S(!(condition), GeneralLog, "V_CHECK failed!"); \
         LoggingHelpers::LogToScreen(#condition); \
         return; \
     } } while (true, false)
 
 #define V_CHECK_RETURN(condition, result) \
     do { if (!(condition)) { \
-        V_ERROR_IF_S(!(condition), General, "V_CHECK failed!"); \
+        V_ERROR_IF_S(!(condition), GeneralLog, "V_CHECK failed!"); \
         LoggingHelpers::LogToScreen(#condition); \
         return (result); \
     } } while (true, false)

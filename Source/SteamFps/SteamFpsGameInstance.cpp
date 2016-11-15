@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Copyright (c) 2016 V1 Interactive Inc - All Rights Reserved.
 
 #include "SteamFps.h"
 #include <Blueprint/UserWidget.h>
@@ -6,10 +6,33 @@
 #include <Online.h>
 #include "SteamFpsGameInstance.h"
 
+namespace
+{
+    std::list<USteamFpsGameInstance*> s_instanceList;
+}
+
 USteamFpsGameInstance::USteamFpsGameInstance()
     : m_enableLan(false)
 {
     m_stateData.AddZeroed(static_cast<int>(eGameState::kCount));
+    s_instanceList.emplace_back(this);
+}
+
+USteamFpsGameInstance::~USteamFpsGameInstance()
+{
+    s_instanceList.remove(this);
+}
+
+USteamFpsGameInstance* USteamFpsGameInstance::GetInstance()
+{
+    return !s_instanceList.empty() ? s_instanceList.back() : nullptr;
+}
+
+void USteamFpsGameInstance::OpenLevel(FName levelName, bool absolute, FString options)
+{
+    V_LOG(GeneralLog, "OpenLevel(%s, %s, %s)", *levelName.ToString(), V_FORMAT_BOOL(absolute), *options);
+    auto world = this->GetWorld();
+    UGameplayStatics::OpenLevel(this, levelName, absolute, options);
 }
 
 void USteamFpsGameInstance::CreateWidgets()
@@ -45,25 +68,33 @@ void USteamFpsGameInstance::StateTransition(eGameState gs)
         return;
     }
 
-    // Handle exiting existing states
-    ShowWidget(m_currentState, false);
+    OnExitGameState(m_currentState);
+    m_currentState = gs;
+    OnEnterGameState(m_currentState);
+}
 
-    switch(m_currentState)
+void USteamFpsGameInstance::OnEnterGameState(const eGameState gs)
+{
+    // PrintToScreen("Setting new state {gs}", White, 5.0f);
+    ShowWidget(gs, true);
+}
+
+void USteamFpsGameInstance::OnExitGameState(const eGameState gs)
+{
+    ShowWidget(gs, false);
+
+    switch (gs)
     {
     case eGameState::Playing:
         // TODO: DestroySession(GetPlayerController(0)) // VIDEO@(28min)
         break;
     }
-
-    // PrintToScreen("Setting new state {gs}", White, 5.0f);
-    m_currentState = gs;
-    ShowWidget(m_currentState, true);
 }
 
 bool USteamFpsGameInstance::ServerTravel(const FString& url, bool absolute, bool shouldSkipGameNotify)
 {
     V_TRACE();
-    V_LOG(General, "ServerTravel(%s, %s, %s)", *url, V_FORMAT_BOOL(absolute), V_FORMAT_BOOL(shouldSkipGameNotify));
+    V_LOG(GeneralLog, "ServerTravel(%s, %s, %s)", *url, V_FORMAT_BOOL(absolute), V_FORMAT_BOOL(shouldSkipGameNotify));
     UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("ServerTravel(%s)"), *url), true, false, FColor::White, 5);
 
     auto world = GetWorld();
@@ -79,39 +110,12 @@ void USteamFpsGameInstance::ShowLoadScreen()
 void USteamFpsGameInstance::HostGameEvent()
 {
     ShowLoadScreen();
-    CreateSession();
+    //CreateSession();
     // TODO: OpenLevel("MP_Level1", Absolute, Listen);
 }
 
 void USteamFpsGameInstance::DestroySession(APlayerController* playerController)
 {
-}
-
-void USteamFpsGameInstance::CreateSession()
-{
-    auto sessionInterface = Online::GetSessionInterface();
-    V_CHECK(sessionInterface.IsValid());
-
-    auto sessionState = sessionInterface->GetSessionState(SESSION_NAME);
-    V_LOG(General, "SessionState = %s", *V_FORMAT_ENUM(EOnlineSessionState::Type, sessionState));
-
-    if (sessionState == EOnlineSessionState::NoSession)
-    {
-        FOnlineSessionSettings settings;
-        settings.NumPublicConnections = M_MAX_PLAYER_COUNT;
-        settings.bShouldAdvertise = true;
-        settings.bAllowJoinInProgress = false;
-        settings.bIsLANMatch = m_enableLan;
-        settings.bUsesPresence = true;
-        settings.bAllowJoinViaPresence = true;
-        settings.bIsDedicated = true;
-
-        auto sessionResult = sessionInterface->CreateSession(0, SESSION_NAME, settings);
-        if (!sessionResult)
-        {
-            V_ERROR(General, "CreateSession failed.");
-        }
-    }
 }
 
 void USteamFpsGameInstance::ErrorHandler()

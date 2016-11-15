@@ -1,17 +1,13 @@
+// Copyright (c) 2016 V1 Interactive Inc - All Rights Reserved.
 #pragma once
 
 #include "SteamFps.h"
 #include "Logging.h"
 
-DEFINE_LOG_CATEGORY(General)
+DEFINE_LOG_CATEGORY(GeneralLog)
 DEFINE_LOG_CATEGORY(AssertLog)
-DEFINE_LOG_CATEGORY(LogTrace)
-DEFINE_LOG_CATEGORY(LogTest)
-DEFINE_LOG_CATEGORY(GameSessionLog)
-DEFINE_LOG_CATEGORY(GameModeLog)
-DEFINE_LOG_CATEGORY(GameStateLog)
-DEFINE_LOG_CATEGORY(WeaponLog)
-DEFINE_LOG_CATEGORY(AbilityLog)
+DEFINE_LOG_CATEGORY(TraceLog)
+DEFINE_LOG_CATEGORY(TestLog)
 
 namespace LoggingHelpers
 {
@@ -41,12 +37,12 @@ namespace LoggingHelpers
     {
         if (m_logExit)
         {
-            UE_LOG(LogTrace, Log, TEXT("==> %s %s"), *m_loc, *scope);
+            UE_LOG(TraceLog, Log, TEXT("==> %s %s"), *m_loc, *scope);
             m_start = std::chrono::high_resolution_clock::now();
         }
         else
         {
-            UE_LOG(LogTrace, Log, TEXT("%s %s"), *m_loc, *scope);
+            UE_LOG(TraceLog, Log, TEXT("%s %s"), *m_loc, *scope);
         }
     }
 
@@ -59,6 +55,6 @@ namespace LoggingHelpers
 
         auto span = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_start);
         auto count = span.count();
-        UE_LOG(LogTrace, Log, TEXT("<== %s %dms"), *m_loc, count);
+        UE_LOG(TraceLog, Log, TEXT("<== %s %dms"), *m_loc, count);
     }
 }
