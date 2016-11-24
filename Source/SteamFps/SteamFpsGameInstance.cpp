@@ -12,6 +12,7 @@ namespace
 }
 
 USteamFpsGameInstance::USteamFpsGameInstance()
+    : m_gameActor(nullptr)
 {
     s_instanceList.emplace_back(this);
 }
@@ -37,10 +38,9 @@ void USteamFpsGameInstance::Init()
     V_TRACE_MARKER();
 
     auto world = GetWorld();
-    m_gameActor = world->SpawnActor<ASteamFpsGameActor>();
+    V_CHECK_VALID(world);
 
-    // Flag this actor for preservation.
-    m_gameActor->AddToRoot();
+    m_gameActor = world->SpawnActor<ASteamFpsGameActor>();
 }
 
 void USteamFpsGameInstance::Shutdown()
@@ -48,6 +48,7 @@ void USteamFpsGameInstance::Shutdown()
     V_TRACE_MARKER();
 
     V_CHECK_VALID(m_gameActor);
-    m_gameActor->RemoveFromRoot();
+    m_gameActor->Destroy();
+    m_gameActor = nullptr;
 }
 

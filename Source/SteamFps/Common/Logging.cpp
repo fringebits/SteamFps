@@ -4,6 +4,8 @@
 #include "SteamFps.h"
 #include "Logging.h"
 
+#define TRACE_TO_SCREEN 1
+
 DEFINE_LOG_CATEGORY(GeneralLog)
 DEFINE_LOG_CATEGORY(AssertLog)
 DEFINE_LOG_CATEGORY(TraceLog)
@@ -43,6 +45,13 @@ namespace LoggingHelpers
         else
         {
             UE_LOG(TraceLog, Log, TEXT("%s %s"), *m_loc, *scope);
+
+#if TRACE_TO_SCREEN
+            if (GEngine != nullptr)
+            {
+                GEngine->AddOnScreenDebugMessage(INDEX_NONE, 10.f, FColor::Yellow, loc);
+            }
+#endif
         }
     }
 

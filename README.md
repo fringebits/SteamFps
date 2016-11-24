@@ -24,3 +24,8 @@ The role of this function is to create a PlayerController, which will then be re
 Note that APlayerController::BeginPlay will be called here. It should be noted that it is NOT yet safe to call RPC functions on this actor. You should wait until AGameModeBase::PostLogin is called.
 Assuming everything went well, AGameModeBase::PostLogin is called.
 * At this point, it is safe for the server to start calling RPC functions on this PlayerController.
+
+
+Reference links along the way.
+
+* https://answers.unrealengine.com/questions/2803/using-addtoroot-causes-crash-in-multiplayer.html

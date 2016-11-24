@@ -82,10 +82,6 @@ void ASteamFpsGameMode::HandleMatchHasEnded()
 
     auto ai = USteamFpsGameInstance::GetActorInstance();
     ai->SetDesiredState(eGameState::EndOfMatch);
-
-    //auto gi = USteamFpsGameInstance::GetInstance();
-    //V_CHECK_VALID(gi);
-    //gi->OpenLevel("LobbyMap", true);
 }
 
 void ASteamFpsGameMode::HandleLeavingMap()
@@ -93,4 +89,3 @@ void ASteamFpsGameMode::HandleLeavingMap()
     V_TRACE_MARKER();
     Super::HandleLeavingMap();
 }
-
