@@ -21,6 +21,7 @@ public:
     static ASteamFpsGameActor* GetActorInstance();
 
     virtual void Init() override;
+    virtual void Shutdown() override;
 
 protected:
     ASteamFpsGameActor* m_gameActor;

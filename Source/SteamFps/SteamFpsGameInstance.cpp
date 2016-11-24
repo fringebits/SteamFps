@@ -34,9 +34,20 @@ ASteamFpsGameActor* USteamFpsGameInstance::GetActorInstance()
 
 void USteamFpsGameInstance::Init()
 {
+    V_TRACE_MARKER();
+
     auto world = GetWorld();
     m_gameActor = world->SpawnActor<ASteamFpsGameActor>();
 
     // Flag this actor for preservation.
     m_gameActor->AddToRoot();
 }
+
+void USteamFpsGameInstance::Shutdown()
+{
+    V_TRACE_MARKER();
+
+    V_CHECK_VALID(m_gameActor);
+    m_gameActor->RemoveFromRoot();
+}
+
