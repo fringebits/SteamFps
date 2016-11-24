@@ -5,7 +5,7 @@
 #include "SteamFpsGameMode.h"
 #include "SteamFpsGameSession.h"
 #include "SteamFpsGameState.h"
-#include "SteamFpsPlayerController.h"
+#include "Gameplay/SteamFpsPlayerController.h"
 #include "Gameplay/SteamFpsHUD.h"
 #include "Gameplay/SteamFpsCharacter.h"
 #include "Gameplay/SteamFpsPlayerState.h"

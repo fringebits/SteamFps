@@ -49,6 +49,5 @@ void USteamFpsGameInstance::Shutdown()
 
     V_CHECK_VALID(m_gameActor);
     m_gameActor->Destroy();
-    m_gameActor = nullptr;
 }
 

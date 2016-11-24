@@ -3,6 +3,7 @@
 #include "SteamFps.h"
 #include "SteamFpsCharacter.h"
 #include "SteamFpsProjectile.h"
+#include "SteamFpsPlayerController.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/InputSettings.h"
 #include "Kismet/HeadMountedDisplayFunctionLibrary.h"
@@ -132,6 +133,19 @@ void ASteamFpsCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAxis("TurnRate", this, &ASteamFpsCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &ASteamFpsCharacter::LookUpAtRate);
+
+    // Quick exit (ESC) for development.
+    PlayerInputComponent->BindAction("QuitGame", IE_Pressed, this, &ASteamFpsCharacter::OnQuitGame);
+
+}
+
+void ASteamFpsCharacter::OnQuitGame()
+{
+    V_TRACE_MARKER();
+    auto pc = Cast<ASteamFpsPlayerController>(GetController());
+    V_CHECK_VALID(pc);
+
+    pc->ConsoleCommand("quit");
 }
 
 void ASteamFpsCharacter::OnFire()

@@ -76,7 +76,9 @@ public:
 	uint32 bUsingMotionControllers : 1;
 
 protected:
-	
+    // Quit the game.
+    void OnQuitGame();
+
 	/** Fires a projectile. */
 	void OnFire();
 
