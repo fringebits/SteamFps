@@ -4,8 +4,11 @@
 #include "SteamFpsGameInstance.h"
 #include "SteamFpsGameMode.h"
 #include "SteamFpsGameSession.h"
+#include "SteamFpsGameState.h"
+#include "SteamFpsPlayerController.h"
 #include "Gameplay/SteamFpsHUD.h"
 #include "Gameplay/SteamFpsCharacter.h"
+#include "Gameplay/SteamFpsPlayerState.h"
 
 ASteamFpsGameMode::ASteamFpsGameMode()
 {
@@ -17,6 +20,10 @@ ASteamFpsGameMode::ASteamFpsGameMode()
 
     // use our custom HUD class
     HUDClass = ASteamFpsHUD::StaticClass();
+
+    GameStateClass = ASteamFpsGameState::StaticClass();
+    PlayerControllerClass = ASteamFpsPlayerController::StaticClass();
+    PlayerStateClass = ASteamFpsPlayerState::StaticClass();
 }
 
 void ASteamFpsGameMode::BeginPlay()
@@ -28,7 +35,7 @@ void ASteamFpsGameMode::BeginPlay()
 
     ExecuteOnPeriod("ReportGameState", 5.0f, [=]() {
         auto ms = GetMatchState();
-        V_LOG(GeneralLog, "GameState=%s", *(ms.ToString()));
+        V_LOG_S(GeneralLog, "GameState=%s", *(ms.ToString()));
     });
 }
 

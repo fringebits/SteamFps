@@ -41,6 +41,7 @@ class ASteamFpsCharacter : public ACharacter
 	/** Motion controller (left hand) */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UMotionControllerComponent* L_MotionController;
+
 public:
 	ASteamFpsCharacter();
 

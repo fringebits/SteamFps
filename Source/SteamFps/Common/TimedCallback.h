@@ -47,7 +47,10 @@ protected:
                 continue;
             }
 
-            V_LOG_S(GeneralLog, "Execute: %s @ %.1f", *(f->name.ToString()), m_modeTimer);
+            if (f->runonce)
+            {
+                V_LOG_S(GeneralLog, "Execute: %s @ %.1f RUNONCE", *(f->name.ToString()), m_modeTimer);
+            }
             f->executed = true;
             f->func();
             f->runAt = m_modeTimer + f->period;

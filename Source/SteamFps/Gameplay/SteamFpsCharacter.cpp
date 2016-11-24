@@ -8,13 +8,13 @@
 #include "Kismet/HeadMountedDisplayFunctionLibrary.h"
 #include "MotionControllerComponent.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
-
 //////////////////////////////////////////////////////////////////////////
 // ASteamFpsCharacter
 
 ASteamFpsCharacter::ASteamFpsCharacter()
 {
+    V_TRACE_MARKER();
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
 
@@ -30,7 +30,7 @@ ASteamFpsCharacter::ASteamFpsCharacter()
 
 	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
 	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->SetOnlyOwnerSee(true);
+	//Mesh1P->SetOnlyOwnerSee(true); [going to comment this one out for now]
 	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
 	Mesh1P->bCastDynamicShadow = false;
 	Mesh1P->CastShadow = false;
@@ -39,7 +39,7 @@ ASteamFpsCharacter::ASteamFpsCharacter()
 
 	// Create a gun mesh component
 	FP_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("FP_Gun"));
-	FP_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	FP_Gun->SetOnlyOwnerSee(true); // BUGBUG: Going to comment this one out for now.
 	FP_Gun->bCastDynamicShadow = false;
 	FP_Gun->CastShadow = false;
 	// FP_Gun->SetupAttachment(Mesh1P, TEXT("GripPoint"));
@@ -65,7 +65,7 @@ ASteamFpsCharacter::ASteamFpsCharacter()
 	// Create a gun and attach it to the right-hand VR controller.
 	// Create a gun mesh component
 	VR_Gun = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("VR_Gun"));
-	VR_Gun->SetOnlyOwnerSee(true);			// only the owning player will see this mesh
+	//VR_Gun->SetOnlyOwnerSee(true); // BUGBUG: Going to comment this one out for now.
 	VR_Gun->bCastDynamicShadow = false;
 	VR_Gun->CastShadow = false;
 	VR_Gun->SetupAttachment(R_MotionController);
@@ -78,6 +78,8 @@ ASteamFpsCharacter::ASteamFpsCharacter()
 
 	// Uncomment the following line to turn motion controllers on by default:
 	//bUsingMotionControllers = true;
+
+    SetReplicates(true);
 }
 
 void ASteamFpsCharacter::BeginPlay()
@@ -134,6 +136,8 @@ void ASteamFpsCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 void ASteamFpsCharacter::OnFire()
 {
+    V_TRACE_MARKER();
+
 	// try and fire a projectile
 	if (ProjectileClass != NULL)
 	{
@@ -178,6 +182,8 @@ void ASteamFpsCharacter::OnFire()
 
 void ASteamFpsCharacter::OnResetVR()
 {
+    V_TRACE_MARKER();
+
 	UHeadMountedDisplayFunctionLibrary::ResetOrientationAndPosition();
 }
 
