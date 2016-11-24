@@ -2,30 +2,15 @@
 #pragma once
 
 #include <GameFramework/GameMode.h>
-#include <functional>
+#include "Common/TimedCallback.h"
+#include "Common/StateMachine.h"
+#include "SteamFpsGameSession.h"
 #include "SteamFpsGameMode.generated.h"
 
-struct TimedCallback 
-{
-    TimedCallback(FName _name, bool _runonce, float _period, std::function<void()>& _func)
-        : name(_name)
-        , runonce(_runonce)
-        , period(_period)
-        , runAt(_period)
-        , executed(false)
-        , func(_func)
-    { }
-
-    FName name;
-    float period;
-    float runAt;
-    bool  executed;
-    bool  runonce;
-    std::function<void()> func;
-};
-
 UCLASS()
-class ASteamFpsGameMode : public AGameMode
+class ASteamFpsGameMode
+    : public AGameMode
+    , public CallbackComponent
 {
 	GENERATED_BODY()
 
@@ -34,13 +19,35 @@ public:
 
     virtual void BeginPlay() override;
     virtual void Tick(float dT) override;
-    virtual TSubclassOf<AGameSession> GetGameSessionClass() const override;
+
+    virtual TSubclassOf<AGameSession> GetGameSessionClass() const override 
+    { 
+        return ASteamFpsGameSession::StaticClass();
+    }
 
 protected:
-    void ExecuteOnceAfter(FName name, float time, std::function<void()> func);
-    void ExecuteOnPeriod(FName name, float time, std::function<void()> func);
+    // Init game, initialize parameters and spawn helper classes
+    virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
 
-protected:
-    float m_modeTimer; // time spent in current mode (since begin play)
-    std::list<std::shared_ptr<TimedCallback>> m_timers;  // list of timers to process
+    // Accepts or rejects player attempting to join server.
+    virtual void PreLogin(const FString& Options, const FString& Address, const FUniqueNetIdRepl& UniqueId, FString& ErrorMessage) override;
+
+    // Called after successful login.  First place we can safely call replicated functions on the PlayerController.
+    virtual void PostLogin(APlayerController* NewPlayer);
+
+    // Called after PostLogin.  Default creates a pawn for the player.
+    //virtual void HandleStartingNewPlayer() override;
+
+    // Restart player.  Called to start spawning player's Pawn.
+    virtual void RestartPlayer(class AController* NewPlayer) override;
+
+    // This is what spawns the player's pawn
+    //virtual void SpawnDefaultPawnAtTransform() override;
+
+    // Called when player leaves or is destroyed.
+    virtual void Logout(AController* Exiting) override;
+
+    virtual void HandleMatchHasStarted() override;
+    virtual void HandleMatchHasEnded() override;
+    virtual void HandleLeavingMap() override;
 };

@@ -6,6 +6,7 @@
 #include "SteamFpsGameSession.h"
 
 ASteamFpsGameSession::ASteamFpsGameSession()
+    : m_isLanMatch(false)
 {
     V_TRACE_MARKER();
 }
@@ -39,7 +40,7 @@ void ASteamFpsGameSession::CreateOnlineSession()
         settings.NumPublicConnections = V_MAX_PLAYER_COUNT;
         settings.bShouldAdvertise = true;
         settings.bAllowJoinInProgress = true;
-        settings.bIsLANMatch = true;
+        settings.bIsLANMatch = m_isLanMatch;
         settings.bUsesPresence = true;
         settings.bAllowJoinViaPresence = true;
         settings.bIsDedicated = true;
@@ -54,10 +55,10 @@ void ASteamFpsGameSession::OnCreateSessionComplete(FName sessionName, bool wasSu
     V_LOG(GeneralLog, "OnCreateSessionComplete: %s", V_FORMAT_BOOL(wasSuccessful));
 
     // Session was created.
-    auto gi = USteamFpsGameInstance::GetInstance();
-    V_CHECK_VALID(gi);
+    auto ai = USteamFpsGameInstance::GetActorInstance();
+    V_CHECK_VALID(ai);
 
-    gi->OpenLevel("SandboxMap", true, "listen");
+    ai->OpenLevel("SandboxMap", true, "listen");
     //UGameplayStatics::OpenLevel(GetWorld(), "Sandbox", true, "listen");
 }
 

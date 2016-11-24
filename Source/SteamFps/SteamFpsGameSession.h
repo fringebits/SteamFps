@@ -18,4 +18,6 @@ public:
 
 private:
     void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+
+    bool m_isLanMatch;
 };
