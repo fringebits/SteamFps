@@ -17,6 +17,7 @@ class ASteamFpsGameMode
 public:
 	ASteamFpsGameMode();
 
+    virtual void PreInitializeComponents() override;
     virtual void BeginPlay() override;
     virtual void Tick(float dT) override;
 
@@ -24,6 +25,8 @@ public:
     { 
         return ASteamFpsGameSession::StaticClass();
     }
+
+    void RequestFinishAndExitToMainMenu();
 
 protected:
     // Init game, initialize parameters and spawn helper classes
@@ -47,7 +50,40 @@ protected:
     // Called when player leaves or is destroyed.
     virtual void Logout(AController* Exiting) override;
 
+    virtual void HandleMatchIsWaitingToStart() override;
     virtual void HandleMatchHasStarted() override;
     virtual void HandleMatchHasEnded() override;
     virtual void HandleLeavingMap() override;
+
+    // 
+    void FinishMatch();
+    void DetermineMatchWinner();
+    bool IsWinner(class ASteamFpsPlayerState* ps) const;
+
+protected:
+    /** delay between first player login and starting match */
+    UPROPERTY(config)
+        int32 WarmupTime;
+
+    /** match duration */
+    UPROPERTY(config)
+        int32 RoundTime;
+
+    UPROPERTY(config)
+        int32 TimeBetweenMatches;
+
+    /** score for kill */
+    UPROPERTY(config)
+        int32 KillScore;
+
+    /** score for death */
+    UPROPERTY(config)
+        int32 DeathScore;
+
+private:
+    UFUNCTION()
+    void DefaultTimer();
+
+    /** Handle for efficient management of DefaultTimer timer */
+    FTimerHandle m_defaultTimerHandle;
 };

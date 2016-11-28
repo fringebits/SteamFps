@@ -3,6 +3,13 @@
 #include "SteamFps.h"
 #include "SteamFpsGameState.h"
 
+ASteamFpsGameState::ASteamFpsGameState()
+    : m_remainingTime(0)
+    , m_numTeams(0)
+    , m_timerPaused(false)
+{
+}
+
 /** Called when the state transitions to WaitingToStart */
 void ASteamFpsGameState::HandleMatchIsWaitingToStart()
 {
@@ -30,3 +37,14 @@ void ASteamFpsGameState::HandleLeavingMap()
     V_TRACE_MARKER();
     Super::HandleLeavingMap();
 }
+
+void ASteamFpsGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ASteamFpsGameState, m_numTeams);
+    DOREPLIFETIME(ASteamFpsGameState, m_remainingTime);
+    DOREPLIFETIME(ASteamFpsGameState, m_timerPaused);
+    DOREPLIFETIME(ASteamFpsGameState, m_teamScores);
+}
+

@@ -4,6 +4,9 @@
 #include <GameFramework/GameSession.h>
 #include "SteamFpsGameSession.generated.h"
 
+// AGameSession only exists on the server when running an online game.
+// https://docs.unrealengine.com/latest/INT/API/Runtime/Engine/GameFramework/AGameSession/index.html
+
 UCLASS()
 class ASteamFpsGameSession : public AGameSession
 {

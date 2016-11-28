@@ -14,3 +14,4 @@
 
 #define V_SESSION_NAME      "SteamFpsSession"
 #define V_MAX_PLAYER_COUNT  4
+#define V_MAX_NAME_LENGTH   8
